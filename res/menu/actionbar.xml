@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/action_menu"
+            android:icon="@drawable/ic_action_settings"
+            android:showAsAction="always|withText"
+            android:title="@string/options">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                        android:id="@+id/bin"
+                        android:showAsAction="never"
+                        android:title="@string/binary_"/>
+                <item
+                        android:id="@+id/oct"
+                        android:showAsAction="never"
+                        android:title="@string/octal"/>
+                <item
+                        android:id="@+id/dec"
+                        android:showAsAction="never"
+                        android:title="@string/decimal"/>
+                <item
+                        android:id="@+id/hex"
+                        android:showAsAction="never"
+                        android:title="@string/hexadecimal"/>
+            </group>
+        </menu>
+    </item>
+</menu>

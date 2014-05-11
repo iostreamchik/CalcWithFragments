@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calculator</string>
+    <array name="fragments">
+        <item>Calculator</item>
+        <item>About</item>
+        <item>Exit</item>
+    </array>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="menu">Menu</string>
+    <string name="options">options</string>
+
+    <color name="hex">#ff0098d1</color>
+    <color name="digits">#ff90ff76</color>
+    <color name="operators">#ffff9b49</color>
+
+    <string name="hexadecimal">hex: 16</string>
+    <string name="decimal">dec: 10</string>
+    <string name="octal">oct: 8</string>
+    <string name="binary_">bin: 2</string>
+
+    <string name="main_screen_hint">0</string>
+    <string name="del">x</string>
+
+    <string name="A_button">A</string>
+    <string name="B_button">B</string>
+    <string name="C_button">C</string>
+    <string name="D_button">D</string>
+    <string name="E_button">E</string>
+    <string name="F_button">F</string>
+
+    <string name="zero">0</string>
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
+    <string name="five">5</string>
+    <string name="six">6</string>
+    <string name="seven">7</string>
+    <string name="eight">8</string>
+    <string name="nine">9</string>
+
+    <string name="dividing">÷</string>
+    <string name="multiplication">×</string>
+    <string name="pow">^</string>
+    <string name="open">(</string>
+    <string name="close">)</string>
+    <string name="minus">-</string>
+    <string name="plus">+</string>
+    <string name="dot">.</string>
+    <string name="equity">=</string>
+</resources>
