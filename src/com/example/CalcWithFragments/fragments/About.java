@@ -12,31 +12,10 @@ public class About extends Fragment {
     public About() {
     }
 
-    public static final String TAG;
-
-    static {
-        TAG = "fragment_number";
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-//        int i = getArguments().getInt(TAG);
-//        String fragment = getResources().getStringArray(R.array.fragments)[i];
-        getSupportActivity().setTitle(getResources().getStringArray(R.array.fragments)[1]);
-        return inflater.inflate(R.layout.about);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        setHasOptionsMenu(false);
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         getSupportActionBar().setSubtitle("About");
+        return inflater.inflate(R.layout.about);
     }
 }

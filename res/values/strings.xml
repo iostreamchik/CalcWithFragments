@@ -16,10 +16,10 @@
     <color name="digits">#ff90ff76</color>
     <color name="operators">#ffff9b49</color>
 
-    <string name="hexadecimal">hex: 16</string>
-    <string name="decimal">dec: 10</string>
-    <string name="octal">oct: 8</string>
-    <string name="binary_">bin: 2</string>
+    <string name="hexadecimal">Hex 16</string>
+    <string name="decimal">Dec 10</string>
+    <string name="octal">Oct 8</string>
+    <string name="binary_">Bin 2</string>
 
     <string name="main_screen_hint">0</string>
     <string name="del">x</string>

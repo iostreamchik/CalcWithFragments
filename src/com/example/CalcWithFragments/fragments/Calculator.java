@@ -2,10 +2,7 @@ package com.example.CalcWithFragments.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import com.example.CalcWithFragments.R;
 import com.example.CalcWithFragments.service.DigitService;
 import org.holoeverywhere.LayoutInflater;
@@ -68,8 +65,15 @@ public class Calculator extends Fragment {
     private Button equity;
 
     private View inflate;
+    Menu menu;
 
     public Calculator() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -78,7 +82,7 @@ public class Calculator extends Fragment {
 //        int i = getArguments().getInt(TAG);
 //        String fragment = getResources().getStringArray(R.array.fragments)[i];
         getSupportActivity().setTitle(getResources().getStringArray(R.array.fragments)[0]);
-
+        setRetainInstance(true);
         //main screen
         mainScreen = (TextView) inflate.findViewById(R.id.main_screen);
 
@@ -143,6 +147,7 @@ public class Calculator extends Fragment {
         equity.setOnClickListener(onOperatorButtonClick);
         return inflate;
     }
+
     View.OnClickListener onDeleteButtonClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -333,10 +338,9 @@ public class Calculator extends Fragment {
     };
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mainScreen.setText(screenData);
-        Log.i("TAG", "* onResume");
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.actionbar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void checkResolve() {
@@ -349,47 +353,39 @@ public class Calculator extends Fragment {
         }
         //we can`t convert decimal
         screenData = DigitService.getBigInteger(screenData);
+
     }
 
-    public void prepareOptionsMenu(Menu menu) {
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        this.menu = menu;
+        Log.i("Fragment", "onPrepareOptionsMenu " + notationSystem);
         switch (notationSystem) {
             case 2:
-                try {
-                    menu.findItem(R.id.bin).setChecked(true);
-                    getSupportActionBar().setSubtitle(R.string.binary_);
-                } catch (NullPointerException ex) {
-                    binLayout();
-                }
+                menu.findItem(R.id.bin).setChecked(true);
+                getSupportActivity().getSupportActionBar().setSubtitle(R.string.binary_);
+                binLayout();
                 break;
             case 8:
-                try {
-                    menu.findItem(R.id.oct).setChecked(true);
-                    getSupportActionBar().setSubtitle(R.string.octal);
-                } catch (NullPointerException ex) {
-                    octLayout();
-                }
+                menu.findItem(R.id.oct).setChecked(true);
+                getSupportActivity().getSupportActionBar().setSubtitle(R.string.octal);
+                octLayout();
                 break;
             case 10:
-                try {
-                    menu.findItem(R.id.dec).setChecked(true);
-                    getSupportActionBar().setSubtitle(R.string.decimal);
-                } catch (NullPointerException ex) {
-                    decLayout();
-                }
+                menu.findItem(R.id.dec).setChecked(true);
+                getSupportActivity().getSupportActionBar().setSubtitle(R.string.decimal);
+                decLayout();
                 break;
             case 16:
-                try {
-                    menu.findItem(R.id.hex).setChecked(true);
-                    getSupportActionBar().setSubtitle(R.string.hexadecimal);
-                } catch (NullPointerException ex) {
-                    hexLayout();
-                }
+                menu.findItem(R.id.hex).setChecked(true);
+                getSupportActivity().getSupportActionBar().setSubtitle(R.string.hexadecimal);
+                hexLayout();
                 break;
         }
     }
 
-    public void optionsItemSelected(MenuItem item) {
-        Log.i("TAG", String.valueOf(item.getItemId()));
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.bin:
                 getSupportActionBar().setSubtitle(R.string.binary_);
@@ -504,7 +500,7 @@ public class Calculator extends Fragment {
                 mainScreen.setText(screenData);
                 break;
         }
-//        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
 
     private void hexLayout() {
@@ -579,4 +575,10 @@ public class Calculator extends Fragment {
         hexF.setEnabled(false);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mainScreen.setText(screenData);
+        Log.i("Fragment", "onResume");
+    }
 }

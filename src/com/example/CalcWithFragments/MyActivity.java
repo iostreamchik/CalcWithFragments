@@ -1,7 +1,9 @@
 package com.example.CalcWithFragments;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
@@ -9,11 +11,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import com.example.CalcWithFragments.fragments.About;
 import com.example.CalcWithFragments.fragments.Calculator;
@@ -27,11 +30,11 @@ public class MyActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] fragmentTitles;
-    private Menu mMenu;
+    private FrameLayout frame;
+    private float lastTranslate = 0.0f;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,7 @@ public class MyActivity extends Activity {
         fragmentTitles = getResources().getStringArray(R.array.fragments);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        frame = (FrameLayout) findViewById(R.id.content_frame);
 
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, fragmentTitles));
@@ -52,6 +56,23 @@ public class MyActivity extends Activity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer_light, R.string.drawer_open, R.string.drawer_close) {
+
+            @SuppressLint("NewApi")
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                float moveFactor = (mDrawerList.getWidth() * slideOffset);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    frame.setTranslationX(moveFactor);
+                } else {
+                    TranslateAnimation anim = new TranslateAnimation(lastTranslate, moveFactor, 0.0f, 0.0f);
+                    anim.setDuration(0);
+                    anim.setFillAfter(true);
+                    frame.startAnimation(anim);
+
+                    lastTranslate = moveFactor;
+                }
+            }
+
             @Override
             public void onDrawerOpened(View drawerView) {
                 getSupportActionBar().setTitle(mDrawerTitle);
@@ -72,44 +93,22 @@ public class MyActivity extends Activity {
     }
 
     @Override
-    public void onAttachFragment(android.support.v4.app.Fragment fragment) {
-        try {
-            mMenu.findItem(R.id.action_bar).setVisible(fragment.getId() == 2131165323);
-        } catch (NullPointerException ex) {
-        }
-        super.onAttachFragment(fragment);
-        Log.i("TAG", String.valueOf(fragment.getId()));
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        menu.clear();
-        inflater.inflate(R.menu.actionbar, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_menu).setVisible(!drawerOpen);
         try {
-            Calculator calculator = (Calculator) getSupportFragmentManager().findFragmentById(2131165323);
-            calculator.prepareOptionsMenu(menu);
-        } catch (ClassCastException ex) {
-            menu.findItem(R.id.action_menu).setVisible(false);
+            menu.findItem(R.id.bin).setVisible(!drawerOpen);
+            menu.findItem(R.id.oct).setVisible(!drawerOpen);
+            menu.findItem(R.id.dec).setVisible(!drawerOpen);
+            menu.findItem(R.id.hex).setVisible(!drawerOpen);
+        } catch (NullPointerException ex) {
+            Log.i("findFragmentById", "MenuNullPointerException");
         }
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        Calculator calculator = (Calculator) getSupportFragmentManager().findFragmentById(2131165323);
-        calculator.optionsItemSelected(item);
-            return true;
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     private class DrawerItemClickListner implements ListView.OnItemClickListener {
@@ -121,18 +120,18 @@ public class MyActivity extends Activity {
 
     private void selectItem(int position) {
         Fragment fragment = new Calculator();
-//        Bundle args = new Bundle();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         switch (position) {
             case 0:
+                getSupportActionBar().setSubtitle(getResources().getStringArray(R.array.fragments)[0]);
                 fragment = new Calculator();
-//                args.putInt(Calculator.TAG, position);
                 break;
             case 1:
+                getSupportActionBar().setSubtitle(getResources().getStringArray(R.array.fragments)[1]);
                 fragment = new About();
-//                args.putInt(About.TAG, position);
                 break;
             case 2:
-                getSupportActionBar().setSubtitle("Exit");
+                getSupportActionBar().setSubtitle(getResources().getStringArray(R.array.fragments)[2]);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
@@ -156,8 +155,6 @@ public class MyActivity extends Activity {
                         .setNegativeButton("No", dialogClickListener).show();
                 break;
         }
-//        fragment.setArguments(args);
-        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         mDrawerList.setItemChecked(position, true);
         setTitle(fragmentTitles[position]);
@@ -175,6 +172,4 @@ public class MyActivity extends Activity {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
-
 }
